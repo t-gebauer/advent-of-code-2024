@@ -3,24 +3,26 @@ type tree = Empty | Node of int * tree * tree;;
 let rec tree_insert tree x =
   match tree with
   | Empty -> Node(x, Empty, Empty)
-  | Node(y, left, right) ->
-      if x < y then Node(y, tree_insert left x, right)
-               else Node(y, left, tree_insert right x);;
+  | Node(n, left, right) ->
+      if x < n then Node(n, tree_insert left x, right)
+               else Node(n, left, tree_insert right x);;
 
-let rec tree_count tree e =
+let rec tree_count tree x =
   match tree with
   | Empty -> 0
-  | Node(x, left, right) -> (if x = e then 1 else 0) + (tree_count left e) + (tree_count right e);;
+  | Node(n, left, right) ->
+      if x < n then 0 + (tree_count left x)
+      else (if x = n then 1 else 0) + (tree_count right x);;
 
 let rec list_of_tree tree =
   match tree with
   | Empty -> []
   | Node(e, left, right) -> list_of_tree left @ e :: list_of_tree right;;
 
-let split_in_pairs str =
+let split_into_pairs str =
   match String.split_on_char ' ' str with
   | [x; _; _; y] -> (int_of_string x, int_of_string y)
-  | e -> raise (Invalid_argument "str");;
+  | _ -> raise (Invalid_argument "str");;
 
 let total_distance a b =
   List.fold_left2 (fun acc x y -> let dist = abs (x - y) in acc + dist)
@@ -35,7 +37,7 @@ let b = ref Empty in
 try
   while true do
     let line = read_line () in
-    let (x, y) = split_in_pairs line in
+    let (x, y) = split_into_pairs line in
     a := tree_insert !a x;
     b := tree_insert !b y;
   done
