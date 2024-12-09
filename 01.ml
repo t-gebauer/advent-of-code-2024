@@ -33,21 +33,17 @@ let total_distance a b =
 
 let similarity_score a b =
   List.fold_left (fun acc e -> acc + (e * tree_count b e)) 0 (list_of_tree a)
-;;
 
-let a = ref Empty in
-let b = ref Empty in
-try
-  while true do
-    let line = read_line () in
-    let x, y = split_into_pairs line in
-    a := tree_insert !a x;
-    b := tree_insert !b y
-  done
-with End_of_file ->
-  print_string "part 1: ";
-  print_int (total_distance !a !b);
-  print_newline ();
-  print_string "part 2: ";
-  print_int (similarity_score !a !b);
-  print_newline ()
+let () =
+  let a = ref Empty in
+  let b = ref Empty in
+  try
+    while true do
+      let line = read_line () in
+      let x, y = split_into_pairs line in
+      a := tree_insert !a x;
+      b := tree_insert !b y
+    done
+  with End_of_file ->
+    Printf.printf "part 1: %d\n" (total_distance !a !b);
+    Printf.printf "part 2: %d\n" (similarity_score !a !b)
