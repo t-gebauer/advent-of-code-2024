@@ -14,8 +14,7 @@ let rec tree_count tree x =
       if x < n then 0 + tree_count left x
       else (if x = n then 1 else 0) + tree_count right x
 
-let rec list_of_tree tree =
-  match tree with
+let rec list_of_tree = function
   | Empty -> []
   | Node (e, left, right) -> list_of_tree left @ (e :: list_of_tree right)
 
@@ -34,16 +33,49 @@ let total_distance a b =
 let similarity_score a b =
   List.fold_left (fun acc e -> acc + (e * tree_count b e)) 0 (list_of_tree a)
 
-let () =
-  let a = ref Empty in
-  let b = ref Empty in
+let input_as_trees lines =
+  List.fold_left
+    (fun (a, b) line ->
+      let x, y = split_into_pairs line in
+      (tree_insert a x, tree_insert b y))
+    (Empty, Empty) lines
+
+let part1 lines =
+  let a, b = input_as_trees lines in
+  total_distance a b
+
+let part2 lines =
+  let a, b = input_as_trees lines in
+  similarity_score a b
+
+let parse_lines text = String.split_on_char '\n' text |> List.filter (( <> ) "")
+
+let example = parse_lines {|
+3   4
+4   3
+2   5
+1   3
+3   9
+3   3
+|}
+
+let%expect_test _ =
+  print_int (part1 example);
+  [%expect {| 11 |}]
+
+let%expect_test _ =
+  print_int (part2 example);
+  [%expect {| 31 |}]
+
+let read_all_lines () =
+  let lines = ref [] in
   try
     while true do
-      let line = read_line () in
-      let x, y = split_into_pairs line in
-      a := tree_insert !a x;
-      b := tree_insert !b y
+      lines := read_line () :: !lines
     done
-  with End_of_file ->
-    Printf.printf "part 1: %d\n" (total_distance !a !b);
-    Printf.printf "part 2: %d\n" (similarity_score !a !b)
+  with End_of_file -> List.rev !lines
+
+let main () =
+  let lines = read_all_lines () in
+  Printf.printf "part 1: %d\n" (part1 lines);
+  Printf.printf "part 2: %d\n" (part2 lines)

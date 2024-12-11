@@ -1,2 +1,15 @@
+;; Executables can not have tests.
+
+(library
+  (name day01)
+  (modules day01)
+  (inline_tests)
+  (preprocess (pps ppx_expect)))
+
 (executable
-  (name day01))
+  (name run01)
+  (modules run01)
+  (libraries day01))
+
+(rule
+  (write-file run01.ml "let () = Day01.main ()"))
