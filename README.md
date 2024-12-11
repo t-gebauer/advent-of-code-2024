@@ -1,11 +1,13 @@
 # Advent of Code 2024
 
-Nix:
+### Nix
+
 ```shell
 nix-instantiate --eval 01.nix --arg inputPath .../inputs/day01 --attr part1
 ```
 
-OCaml:
+### OCaml
+
 ```shell
-ocaml 01.ml < .../inputs/day01
+dune exec ./day01.exe < .../inputs/day01
 ```
