@@ -23,6 +23,13 @@ let split_into_pairs str =
   | [ x; _; _; y ] -> (int_of_string x, int_of_string y)
   | _ -> raise (Invalid_argument "str")
 
+let input_as_trees lines =
+  List.fold_left
+    (fun (a, b) line ->
+      let x, y = split_into_pairs line in
+      (tree_insert a x, tree_insert b y))
+    (Empty, Empty) lines
+
 let total_distance a b =
   List.fold_left2
     (fun acc x y ->
@@ -33,24 +40,15 @@ let total_distance a b =
 let similarity_score a b =
   List.fold_left (fun acc e -> acc + (e * tree_count b e)) 0 (list_of_tree a)
 
-let input_as_trees lines =
-  List.fold_left
-    (fun (a, b) line ->
-      let x, y = split_into_pairs line in
-      (tree_insert a x, tree_insert b y))
-    (Empty, Empty) lines
-
 let part1 lines =
   let a, b = input_as_trees lines in
-  total_distance a b
+  total_distance a b |> string_of_int
 
 let part2 lines =
   let a, b = input_as_trees lines in
-  similarity_score a b
+  similarity_score a b |> string_of_int
 
-let parse_lines text = String.split_on_char '\n' text |> List.filter (( <> ) "")
-
-let example = parse_lines {|
+let example = Lib.parse_lines {|
 3   4
 4   3
 2   5
@@ -60,22 +58,9 @@ let example = parse_lines {|
 |}
 
 let%expect_test _ =
-  print_int (part1 example);
+  print_string (part1 example);
   [%expect {| 11 |}]
 
 let%expect_test _ =
-  print_int (part2 example);
+  print_string (part2 example);
   [%expect {| 31 |}]
-
-let read_all_lines () =
-  let lines = ref [] in
-  try
-    while true do
-      lines := read_line () :: !lines
-    done
-  with End_of_file -> List.rev !lines
-
-let main () =
-  let lines = read_all_lines () in
-  Printf.printf "part 1: %d\n" (part1 lines);
-  Printf.printf "part 2: %d\n" (part2 lines)

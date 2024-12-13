@@ -9,5 +9,5 @@ nix-instantiate --eval 01.nix --arg inputPath .../inputs/day01 --attr part1
 ### OCaml
 
 ```shell
-dune exec ./run01.exe < .../inputs/day01
+dune exec ./runner.exe 01 1 < .../inputs/day01
 ```

@@ -45,6 +45,7 @@ let part1 lines =
   |> List.fold_left
        (fun acc report -> acc + if report_is_safe report then 1 else 0)
        0
+  |> string_of_int
 
 let%expect_test "report_is_safe with dampener" =
   let t r =
@@ -69,11 +70,11 @@ let part2 lines =
        (fun acc report ->
          acc + if report_is_safe ~dampener:true report then 1 else 0)
        0
-
-let parse_lines text = String.split_on_char '\n' text |> List.filter (( <> ) "")
+  |> string_of_int
 
 let example =
-  parse_lines {|
+  Lib.parse_lines
+    {|
 7 6 4 2 1
 1 2 7 8 9
 9 7 6 2 1
@@ -83,18 +84,9 @@ let example =
 |}
 
 let%expect_test "part1" =
-  print_int (part1 example);
+  print_string (part1 example);
   [%expect {| 2 |}]
 
-let read_all_lines () =
-  let lines = ref [] in
-  try
-    while true do
-      lines := read_line () :: !lines
-    done
-  with End_of_file -> List.rev !lines
-
-let main () =
-  let lines = read_all_lines () in
-  Printf.printf "part 1: %d\n" (part1 lines);
-  Printf.printf "part 2: %d\n" (part2 lines)
+let%expect_test "part2" =
+  print_string (part2 example);
+  [%expect {| 4 |}]
