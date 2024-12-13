@@ -13,3 +13,17 @@
 
 (rule
   (write-file run01.ml "let () = Day01.main ()"))
+
+(library
+  (name day02)
+  (modules day02)
+  (inline_tests)
+  (preprocess (pps ppx_expect)))
+
+(executable
+  (name run02)
+  (modules run02)
+  (libraries day02))
+
+(rule
+  (write-file run02.ml "let () = Day02.main ()"))
