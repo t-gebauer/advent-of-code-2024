@@ -1,4 +1,19 @@
-let parse_lines text = String.split_on_char '\n' text |> List.filter (( <> ) "")
+let parse_lines text = Str.split (Str.regexp " *\n *") text
+
+let%expect_test _ =
+  let s = {|
+1 2 3
+
+444   555
+  7 8 9
+|} in
+  parse_lines s |> List.iter (Printf.printf "<%s>\n");
+  [%expect {|
+    <1 2 3>
+    <>
+    <444   555>
+    <7 8 9>
+    |}]
 
 let regex_match_all_map regex extract string =
   let rec match_all p result =
