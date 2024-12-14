@@ -89,7 +89,25 @@ let part1 lines =
   |> List.map (fun lines -> lines |> List.map count_xmas |> sum)
   |> sum |> string_of_int
 
-let part2 _lines = "TODO"
+let part2 lines =
+  let open Grid2d in
+  let grid = create_from_lines lines in
+  find_all grid (fun p ->
+      if
+        let x, y = p in
+        x < 1 || y < 1 || x > grid.width - 2 || y > grid.width - 2
+      then None
+      else if get grid p <> 'A' then None
+      else if
+        let tl = get grid (vec_add p (-1, -1)) in
+        let tr = get grid (vec_add p (1, -1)) in
+        let bl = get grid (vec_add p (-1, 1)) in
+        let br = get grid (vec_add p (1, 1)) in
+        ((tl = 'M' && br = 'S') || (tl = 'S' && br = 'M'))
+        && ((tr = 'M' && bl = 'S') || (tr = 'S' && bl = 'M'))
+      then Some p
+      else None)
+  |> List.length |> string_of_int
 
 let example =
   Lib.parse_lines
@@ -112,4 +130,4 @@ let%expect_test _ =
 
 let%expect_test _ =
   print_string (part2 example);
-  [%expect {| TODO |}]
+  [%expect {| 9 |}]
