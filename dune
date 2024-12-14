@@ -3,6 +3,7 @@
 (library
   (name lib)
   (modules lib)
+  (libraries str)
   (inline_tests)
   (preprocess (pps ppx_expect)))
 
@@ -11,7 +12,8 @@
   (modules
     day01
     day02
-    day03)
+    day03
+    day04)
   (libraries str lib)
   (inline_tests)
   (preprocess (pps ppx_expect ppx_deriving.show)))

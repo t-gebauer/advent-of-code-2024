@@ -23,23 +23,16 @@ let%expect_test _ =
   [%expect {| false false false false false false |}]
 
 let match_instructions line =
-  let rec match_all p result =
-    try
-      let p' = Str.search_forward mul_regex line p in
-      let substring = Str.matched_string line in
-      let res' =
-        match substring with
-        | "do()" -> Do true
-        | "don't()" -> Do false
-        | _ ->
-            Mul
-              ( Str.matched_group 1 line |> int_of_string,
-                Str.matched_group 2 line |> int_of_string )
-      in
-      match_all (p' + String.length substring) (res' :: result)
-    with Not_found -> result
+  let extract substring =
+    match substring with
+    | "do()" -> Do true
+    | "don't()" -> Do false
+    | _ ->
+        Mul
+          ( Str.matched_group 1 line |> int_of_string,
+            Str.matched_group 2 line |> int_of_string )
   in
-  match_all 0 [] |> List.rev
+  Lib.regex_match_all_map mul_regex extract line
 
 let process ?(ignoreDo = true) instructions =
   let rec p' result enabled instrs =
