@@ -10,10 +10,11 @@
   (name days)
   (modules
     day01
-    day02)
-  (libraries lib)
+    day02
+    day03)
+  (libraries str lib)
   (inline_tests)
-  (preprocess (pps ppx_expect)))
+  (preprocess (pps ppx_expect ppx_deriving.show)))
 
 (executable
   (name runner)
