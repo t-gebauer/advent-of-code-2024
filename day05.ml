@@ -45,9 +45,24 @@ let sum_middle_page_numbers updates =
 
 let part1 lines =
   let rules, updates = parse_input lines in
-  updates |> List.filter (all_correctly_ordered rules) |> sum_middle_page_numbers
+  updates
+  |> List.filter (all_correctly_ordered rules)
+  |> sum_middle_page_numbers
 
-let part2 _lines = "TODO"
+let order_correctly rules pages =
+  let rec sort = function
+    | [] -> []
+    | x :: xs ->
+        let before, after = List.partition (fun y -> pair_correctly_ordered rules y x) xs in
+        (sort before) @ x :: (sort after)
+  in sort pages
+
+let part2 lines =
+  let rules, updates = parse_input lines in
+  updates
+  |> List.filter (fun pages -> not (all_correctly_ordered rules pages))
+  |> List.map (order_correctly rules)
+  |> sum_middle_page_numbers
 
 let example =
   Lib.parse_lines
@@ -88,4 +103,4 @@ let%expect_test _ =
 
 let%expect_test _ =
   print_string (part2 example);
-  [%expect {| TODO |}]
+  [%expect {| 123 |}]
