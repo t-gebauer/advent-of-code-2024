@@ -28,9 +28,14 @@ let get grid (x, y) =
 let set grid (x, y) c =
   try grid.grid.(y).(x) <- c with Invalid_argument _ -> raise Out_of_bounds
 
+  let set_if_inside grid p c = try
+    set grid p c
+  with Out_of_bounds -> ()
+
 let find_all_map grid f =
   let rec iter ?(res = []) pos =
-    let res = match f pos with None -> res | Some a -> a :: res in
+    let c = get grid pos in
+    let res = match f pos c with None -> res | Some a -> a :: res in
     let x, y = pos in
     if x < grid.width - 1 then iter ~res (x + 1, y)
     else if y < grid.height - 1 then iter ~res (0, y + 1)
@@ -39,8 +44,7 @@ let find_all_map grid f =
   iter (0, 0)
 
 let find_all grid f =
-  find_all_map grid (fun pos ->
-      let c = get grid pos in
+  find_all_map grid (fun pos c ->
       if f pos c then Some pos else None)
 
 let find_one_opt grid f =
