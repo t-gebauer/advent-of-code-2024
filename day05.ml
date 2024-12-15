@@ -1,8 +1,3 @@
-let number_regex = Str.regexp {|[0-9]+|}
-
-let extract_numbers text =
-  Lib.regex_match_all number_regex text |> List.map int_of_string
-
 let list_split_at pred list =
   let p1, p2 =
     let beforeSep = ref true in
@@ -19,10 +14,10 @@ let list_split_at pred list =
 let parse_input lines =
   let rule_lines, update_lines = list_split_at (( = ) "") lines in
   let rules =
-    List.map extract_numbers rule_lines
+    List.map Lib.extract_numbers rule_lines
     |> List.map (fun nums -> (List.nth nums 0, List.nth nums 1))
   in
-  let updates = List.map extract_numbers update_lines in
+  let updates = List.map Lib.extract_numbers update_lines in
   (rules, updates)
 
 let pair_correctly_ordered rules a b =

@@ -79,15 +79,13 @@ MNOP
     P
     |}]
 
-let sum = List.fold_left ( + ) 0
-
 let part1 lines =
   let horizontal = lines in
   let vertical = string_columns_of_rows lines in
   let diagonals = string_diagonals_of_rows lines in
   [ horizontal; vertical; diagonals ]
-  |> List.map (fun lines -> lines |> List.map count_xmas |> sum)
-  |> sum |> string_of_int
+  |> List.map (fun lines -> lines |> List.map count_xmas |> Lib.sum)
+  |> Lib.sum |> string_of_int
 
 let part2 lines =
   let open Grid in

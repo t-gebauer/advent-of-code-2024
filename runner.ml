@@ -20,6 +20,7 @@ let day_of_name =
   | "04" -> (module Day04 : Day)
   | "05" -> (module Day05 : Day)
   | "06" -> (module Day06 : Day)
+  | "07" -> (module Day07 : Day)
   (* next-day *)
   | arg ->
       Printf.printf "Invalid day '%s'" arg;

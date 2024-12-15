@@ -42,3 +42,10 @@ let string_reverse s =
 let%expect_test _ =
   string_reverse "Foobar" |> print_endline;
   [%expect {| rabooF |}]
+
+let sum = List.fold_left ( + ) 0
+
+let number_regex = Str.regexp {|[0-9]+|}
+
+let extract_numbers text =
+  regex_match_all number_regex text |> List.map int_of_string
