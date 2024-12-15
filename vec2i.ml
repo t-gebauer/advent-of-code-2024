@@ -20,3 +20,8 @@ let up_left = north_west
 let up_right = north_east
 let down_left = south_west
 let down_right = south_east
+
+let in_rect (x, y, width, height) (a, b) =
+  a >= x && b >= y && a < x + width && b < y + height
+
+let in_rect_0 (width, height) v = in_rect (0, 0, width, height) v
