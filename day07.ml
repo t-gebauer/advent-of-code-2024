@@ -1,19 +1,27 @@
-let valid_equation numbers =
+let valid_equation operators numbers =
   let test_value = List.hd numbers in
   let numbers = List.tl numbers in
   let rec f cur nums =
     match nums with
     | [] -> cur = test_value
-    | x :: xs -> f (cur + x) xs || f (cur * x) xs
+    | x :: xs ->
+        Option.is_some (List.find_opt (fun op -> f (op cur x) xs) operators)
   in
   f (List.hd numbers) (List.tl numbers)
 
 let part1 lines =
   lines
   |> List.map Lib.extract_numbers
-  |> List.filter valid_equation |> List.map List.hd |> Lib.sum |> string_of_int
+  |> List.filter (valid_equation [ Int.add; Int.mul ])
+  |> List.map List.hd |> Lib.sum |> string_of_int
 
-let part2 _lines = "TODO"
+let concatenation a b = int_of_string (string_of_int a ^ string_of_int b)
+
+let part2 lines =
+  lines
+  |> List.map Lib.extract_numbers
+  |> List.filter (valid_equation [ Int.add; Int.mul; concatenation ])
+  |> List.map List.hd |> Lib.sum |> string_of_int
 
 let example =
   Lib.parse_lines
@@ -35,4 +43,4 @@ let%expect_test _ =
 
 let%expect_test _ =
   print_string (part2 example);
-  [%expect {| TODO |}]
+  [%expect {| 11387 |}]
