@@ -1,3 +1,5 @@
+module V = Vec2i
+
 let xmas = Str.regexp "XMAS"
 
 let count_xmas line =
@@ -15,8 +17,6 @@ let string_columns_of_rows rows =
   in
   f 0 |> List.rev
 
-let vec_add (a, b) (c, d) = (a + c, b + d)
-
 let string_diagonals_of_rows rows =
   let rows = Array.of_list rows in
   let height = Array.length rows in
@@ -30,11 +30,11 @@ let string_diagonals_of_rows rows =
         try
           let x, y = p in
           Buffer.add_char b rows.(y).[x];
-          f' (vec_add p dir)
+          f' (V.add p dir)
         with Invalid_argument _ -> ()
       in
       f' start;
-      f ~res:(Buffer.contents b :: res) (vec_add start start_dir) start_dir dir
+      f ~res:(Buffer.contents b :: res) (V.add start start_dir) start_dir dir
   in
   (* from top-right to top-left : forward *)
   f (width - 1, 0) (-1, 0) (1, 1)
@@ -99,10 +99,10 @@ let part2 lines =
       then None
       else if get grid p <> 'A' then None
       else if
-        let tl = get grid (vec_add p (-1, -1)) in
-        let tr = get grid (vec_add p (1, -1)) in
-        let bl = get grid (vec_add p (-1, 1)) in
-        let br = get grid (vec_add p (1, 1)) in
+        let tl = get grid (V.add p (-1, -1)) in
+        let tr = get grid (V.add p (1, -1)) in
+        let bl = get grid (V.add p (-1, 1)) in
+        let br = get grid (V.add p (1, 1)) in
         ((tl = 'M' && br = 'S') || (tl = 'S' && br = 'M'))
         && ((tr = 'M' && bl = 'S') || (tr = 'S' && bl = 'M'))
       then Some p
