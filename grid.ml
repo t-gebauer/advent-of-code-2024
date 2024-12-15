@@ -1,5 +1,7 @@
 type t = { width : int; height : int; grid : char array array }
 
+exception Out_of_bounds
+
 let create width height f =
   {
     width;
@@ -13,8 +15,18 @@ let create_from_lines lines =
   let width = String.length lines.(0) in
   create width height (fun (x, y) -> lines.(y).[x])
 
-let get grid (x, y) = grid.grid.(y).(x)
-let set grid (x, y) c = grid.grid.(y).(x) <- c
+let copy grid =
+  {
+    width = grid.width;
+    height = grid.height;
+    grid = Array.init grid.height (fun y -> Array.copy grid.grid.(y));
+  }
+
+let get grid (x, y) =
+  try grid.grid.(y).(x) with Invalid_argument _ -> raise Out_of_bounds
+
+let set grid (x, y) c =
+  try grid.grid.(y).(x) <- c with Invalid_argument _ -> raise Out_of_bounds
 
 let find_all_map grid f =
   let rec iter ?(res = []) pos =
@@ -44,3 +56,14 @@ let find_one_opt grid f =
   iter (0, 0)
 
 let find_one grid f = Option.get (find_one_opt grid f)
+
+let print grid =
+  Array.iter
+    (fun line ->
+      Array.iter
+        (fun c ->
+          print_char c;
+          print_char ' ')
+        line;
+      print_newline ())
+    grid.grid

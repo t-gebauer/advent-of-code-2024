@@ -8,8 +8,8 @@
   (preprocess (pps ppx_expect)))
 
 (library
-  (name grid2d)
-  (modules grid2d)
+  (name grid)
+  (modules grid)
   (libraries lib))
 
 (library
@@ -21,7 +21,7 @@
     day04
     day05
     day06)
-  (libraries str lib grid2d)
+  (libraries str lib grid)
   (inline_tests)
   (preprocess (pps ppx_expect ppx_deriving.show)))
 

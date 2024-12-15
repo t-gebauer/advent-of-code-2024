@@ -90,7 +90,7 @@ let part1 lines =
   |> sum |> string_of_int
 
 let part2 lines =
-  let open Grid2d in
+  let open Grid in
   let grid = create_from_lines lines in
   find_all_map grid (fun p ->
       if
