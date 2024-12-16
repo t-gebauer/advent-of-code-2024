@@ -75,6 +75,41 @@ let%expect_test _ =
   "2333133121414131402" |> parseFileParts |> defrag1 |> print_part_list;
   [%expect {| 0099811188827773336446555566 |}]
 
+let defrag2 parts =
+  let files =
+    parts |> List.filter_map (function File x -> Some x | _ -> None)
+  in
+  let defrag_file parts file =
+    let { id = fid; size = fsize } = file in
+    let rec f ?(moved = false) ?(res = []) remaining =
+      match remaining with
+      | [] -> res
+      | x :: xs -> (
+          match x with
+          | File { id; size } ->
+              if id = fid then
+                List.rev xs @ ((if moved then Empty size else x) :: res)
+              else f ~moved ~res:(x :: res) xs
+          | Empty size ->
+              if moved || fsize > size then f ~moved ~res:(x :: res) xs
+              else
+                f ~moved:true
+                  ~res:
+                    (if fsize = size then File { id = fid; size } :: res
+                     else
+                       Empty (size - fsize)
+                       :: File { id = fid; size = fsize }
+                       :: res)
+                  xs)
+    in
+    f parts |> List.rev
+  in
+  List.fold_left defrag_file parts (List.rev files)
+
+let%expect_test _ =
+  "2333133121414131402" |> parseFileParts |> defrag2 |> print_part_list;
+  [%expect {| 00992111777.44.333....5555.6666.....8888.. |}]
+
 let sum_of_n ~first ~last n = n * (first + last) / 2
 
 let checksum parts =
@@ -93,7 +128,10 @@ let part1 lines =
   let line = List.hd lines in
   parseFileParts line |> defrag1 |> checksum |> string_of_int
 
-let part2 _lines = "TODO"
+let part2 lines =
+  assert (List.length lines = 1);
+  let line = List.hd lines in
+  parseFileParts line |> defrag2 |> checksum |> string_of_int
 
 let example = Lib.parse_lines {|
 2333133121414131402
@@ -105,4 +143,4 @@ let%expect_test _ =
 
 let%expect_test _ =
   print_string (part2 example);
-  [%expect {| TODO |}]
+  [%expect {| 2858 |}]
