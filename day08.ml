@@ -2,8 +2,9 @@ module CharMap = Map.Make (Char)
 module V = Vec2i
 
 let find_antennas map =
-  Grid.find_all_map map (fun p c ->
-      match c with '.' -> None | c -> Some (c, p))
+  Grid.find_all_map
+    (fun p c -> match c with '.' -> None | c -> Some (c, p))
+    map
   |> List.fold_left (fun m (c, p) -> CharMap.add_to_list c p m) CharMap.empty
 
 let naive_calculation _width _height a b =
@@ -44,7 +45,9 @@ let count_antinodes calc_f lines =
   let map = Grid.create_from_lines lines in
   let antennas = find_antennas map in
   let antinodes = calculate_antinodes calc_f map antennas in
-  Grid.find_all antinodes (fun _ c -> c == '#') |> List.length |> string_of_int
+  antinodes
+  |> Grid.find_all (fun _ c -> c == '#')
+  |> List.length |> string_of_int
 
 let part1 lines = count_antinodes naive_calculation lines
 let part2 lines = count_antinodes resonant_harmonics_calculation lines

@@ -90,21 +90,23 @@ let part1 lines =
 let part2 lines =
   let open Grid in
   let grid = create_from_lines lines in
-  find_all_map grid (fun p c ->
+  find_all_map
+    (fun p c ->
       if
         let x, y = p in
         x < 1 || y < 1 || x > grid.width - 2 || y > grid.width - 2
       then None
       else if c <> 'A' then None
       else if
-        let tl = get grid (V.add p (-1, -1)) in
-        let tr = get grid (V.add p (1, -1)) in
-        let bl = get grid (V.add p (-1, 1)) in
-        let br = get grid (V.add p (1, 1)) in
+        let tl = get (V.add p (-1, -1)) grid in
+        let tr = get (V.add p (1, -1)) grid in
+        let bl = get (V.add p (-1, 1)) grid in
+        let br = get (V.add p (1, 1)) grid in
         ((tl = 'M' && br = 'S') || (tl = 'S' && br = 'M'))
         && ((tr = 'M' && bl = 'S') || (tr = 'S' && bl = 'M'))
       then Some p
       else None)
+    grid
   |> List.length |> string_of_int
 
 let example =

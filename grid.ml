@@ -22,19 +22,17 @@ let copy grid =
     grid = Array.init grid.height (fun y -> Array.copy grid.grid.(y));
   }
 
-let get grid (x, y) =
+let get (x, y) grid =
   try grid.grid.(y).(x) with Invalid_argument _ -> raise Out_of_bounds
 
-let set grid (x, y) c =
+let set (x, y) c grid =
   try grid.grid.(y).(x) <- c with Invalid_argument _ -> raise Out_of_bounds
 
-  let set_if_inside grid p c = try
-    set grid p c
-  with Out_of_bounds -> ()
+let set_if_inside grid p c = try set p c grid with Out_of_bounds -> ()
 
-let find_all_map grid f =
+let find_all_map f grid =
   let rec iter ?(res = []) pos =
-    let c = get grid pos in
+    let c = get pos grid in
     let res = match f pos c with None -> res | Some a -> a :: res in
     let x, y = pos in
     if x < grid.width - 1 then iter ~res (x + 1, y)
@@ -43,13 +41,12 @@ let find_all_map grid f =
   in
   iter (0, 0)
 
-let find_all grid f =
-  find_all_map grid (fun pos c ->
-      if f pos c then Some pos else None)
+let find_all f grid =
+  find_all_map (fun pos c -> if f pos c then Some pos else None) grid
 
-let find_one_opt grid f =
+let find_one_opt f grid =
   let rec iter pos =
-    let c = get grid pos in
+    let c = get pos grid in
     if f pos c then Some pos
     else
       let x, y = pos in
@@ -59,7 +56,7 @@ let find_one_opt grid f =
   in
   iter (0, 0)
 
-let find_one grid f = Option.get (find_one_opt grid f)
+let find_one f grid = Option.get (find_one_opt f grid)
 
 let print grid =
   Array.iter
