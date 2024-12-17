@@ -9,7 +9,7 @@ module PMap = Map.Make (IntPair)
 module PSet = Set.Make (IntPair)
 module V = Vec2i
 
-let find_trailheads map =
+let find_trails map =
   let trail_ends =
     Grid.find_all (fun _ c -> c = '9') map |> List.map (fun p -> (p, p))
   in
@@ -28,6 +28,9 @@ let find_trailheads map =
     if char = '0' then next_p else f next_p (next_char char)
   in
   f trail_ends '8'
+
+let distinct_ending_positions trails =
+  trails
   |> List.fold_left
        (fun acc (start, pos) ->
          PMap.update pos
@@ -39,11 +42,15 @@ let find_trailheads map =
   |> PMap.map (fun s -> PSet.to_list s |> List.length)
   |> PMap.to_list |> List.map snd
 
+(* trailhead score: how many distinct trail endings are reachable *)
 let part1 lines =
   let map = Grid.create_from_lines lines in
-  find_trailheads map |> Lib.sum |> string_of_int
+  find_trails map |> distinct_ending_positions |> Lib.sum |> string_of_int
 
-let part2 _lines = "TODO"
+(* trailhead rating: how many distinct trails begin here *)
+let part2 lines =
+  let map = Grid.create_from_lines lines in
+  find_trails map |> List.length |> string_of_int
 
 let example =
   Lib.parse_lines
@@ -64,4 +71,4 @@ let%expect_test _ =
 
 let%expect_test _ =
   print_string (part2 example);
-  [%expect {| TODO |}]
+  [%expect {| 81 |}]
