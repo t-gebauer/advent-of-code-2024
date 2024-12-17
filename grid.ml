@@ -25,6 +25,8 @@ let copy grid =
 let get (x, y) grid =
   try grid.grid.(y).(x) with Invalid_argument _ -> raise Out_of_bounds
 
+let get_opt pos grid = try Some (get pos grid) with Out_of_bounds -> None
+
 let set (x, y) c grid =
   try grid.grid.(y).(x) <- c with Invalid_argument _ -> raise Out_of_bounds
 
