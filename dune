@@ -29,7 +29,8 @@
     day08
     day09
     day10
-    day11)
+    day11
+    day12)
   (libraries str lib grid vec2i)
   (inline_tests)
   (preprocess (pps ppx_expect ppx_deriving.show)))

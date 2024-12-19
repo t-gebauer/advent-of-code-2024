@@ -60,6 +60,15 @@ let find_one_opt f grid =
 
 let find_one f grid = Option.get (find_one_opt f grid)
 
+let iteri f grid =
+  Array.iteri (fun y line -> Array.iteri (fun x c -> f (x, y) c) line) grid.grid
+
+let flat_mapi f grid =
+  Array.mapi
+    (fun y line -> Array.mapi (fun x c -> f (x, y) c) line |> Array.to_list)
+    grid.grid
+  |> Array.to_list |> List.flatten
+
 let print grid =
   Array.iter
     (fun line ->
