@@ -1,3 +1,10 @@
+module IntPair = struct
+  type t = int * int
+
+  let compare (a, b) (c, d) =
+    match Stdlib.compare a c with 0 -> Stdlib.compare b d | c -> c
+end
+
 let parse_lines text = Str.split (Str.regexp " *\n *") text
 
 let%expect_test _ =

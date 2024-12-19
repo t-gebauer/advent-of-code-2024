@@ -1,12 +1,5 @@
-module IntPair = struct
-  type t = int * int
-
-  let compare (a, b) (c, d) =
-    match Stdlib.compare a c with 0 -> Stdlib.compare b d | c -> c
-end
-
-module PMap = Map.Make (IntPair)
-module PSet = Set.Make (IntPair)
+module PMap = Map.Make (Lib.IntPair)
+module PSet = Set.Make (Lib.IntPair)
 module V = Vec2i
 
 let find_trails map =
