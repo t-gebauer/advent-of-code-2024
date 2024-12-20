@@ -14,7 +14,7 @@ let find_trails map =
           [ V.up; V.down; V.left; V.right ]
           |> List.map (fun v -> (spos, V.add cpos v))
           |> List.filter (fun (_, p) ->
-                 try Grid.get p map = char with Grid.Out_of_bounds -> false))
+                 try Grid.get map p = char with Grid.Out_of_bounds -> false))
         positions
       |> List.flatten
     in

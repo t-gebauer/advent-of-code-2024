@@ -2,7 +2,7 @@ type t = { width : int; height : int; grid : char array array }
 
 exception Out_of_bounds
 
-let create width height f =
+let create (width, height) f =
   {
     width;
     height;
@@ -13,7 +13,9 @@ let create_from_lines lines =
   let lines = Array.of_list lines in
   let height = Array.length lines in
   let width = String.length lines.(0) in
-  create width height (fun (x, y) -> lines.(y).[x])
+  create (width, height) (fun (x, y) -> lines.(y).[x])
+
+let size grid = (grid.width, grid.height)
 
 let copy grid =
   {
@@ -22,19 +24,19 @@ let copy grid =
     grid = Array.init grid.height (fun y -> Array.copy grid.grid.(y));
   }
 
-let get (x, y) grid =
+let get grid (x, y) =
   try grid.grid.(y).(x) with Invalid_argument _ -> raise Out_of_bounds
 
-let get_opt pos grid = try Some (get pos grid) with Out_of_bounds -> None
+let get_opt grid pos = try Some (get grid pos) with Out_of_bounds -> None
 
-let set (x, y) c grid =
+let set grid (x, y) c =
   try grid.grid.(y).(x) <- c with Invalid_argument _ -> raise Out_of_bounds
 
-let set_if_inside grid p c = try set p c grid with Out_of_bounds -> ()
+let set_if_inside grid p c = try set grid p c with Out_of_bounds -> ()
 
 let find_all_map f grid =
   let rec iter ?(res = []) pos =
-    let c = get pos grid in
+    let c = get grid pos in
     let res = match f pos c with None -> res | Some a -> a :: res in
     let x, y = pos in
     if x < grid.width - 1 then iter ~res (x + 1, y)
@@ -48,7 +50,7 @@ let find_all f grid =
 
 let find_one_opt f grid =
   let rec iter pos =
-    let c = get pos grid in
+    let c = get grid pos in
     if f pos c then Some pos
     else
       let x, y = pos in
@@ -60,8 +62,8 @@ let find_one_opt f grid =
 
 let find_one f grid = Option.get (find_one_opt f grid)
 
-let iteri f grid =
-  Array.iteri (fun y line -> Array.iteri (fun x c -> f (x, y) c) line) grid.grid
+(* let iteri f grid = *)
+(*   Array.iteri (fun y line -> Array.iteri (fun x c -> f (x, y) c) line) grid.grid *)
 
 let flat_mapi f grid =
   Array.mapi

@@ -98,10 +98,10 @@ let part2 lines =
       then None
       else if c <> 'A' then None
       else if
-        let tl = get (V.add p (-1, -1)) grid in
-        let tr = get (V.add p (1, -1)) grid in
-        let bl = get (V.add p (-1, 1)) grid in
-        let br = get (V.add p (1, 1)) grid in
+        let tl = get grid (V.add p (-1, -1)) in
+        let tr = get grid (V.add p (1, -1)) in
+        let bl = get grid (V.add p (-1, 1)) in
+        let br = get grid (V.add p (1, 1)) in
         ((tl = 'M' && br = 'S') || (tl = 'S' && br = 'M'))
         && ((tr = 'M' && bl = 'S') || (tr = 'S' && bl = 'M'))
       then Some p

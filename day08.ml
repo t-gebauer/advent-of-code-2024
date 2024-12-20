@@ -23,7 +23,7 @@ let resonant_harmonics_calculation width height a b =
   [ a ] |> f 1 |> f (-1)
 
 let calculate_antinodes calc_f map antennas =
-  let antinodes = Grid.(create map.width map.height (fun _ -> '.')) in
+  let antinodes = Grid.create (Grid.size map) (fun _ -> '.') in
   CharMap.iter
     (fun _char positions ->
       let rec f = function

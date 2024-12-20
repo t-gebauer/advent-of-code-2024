@@ -9,18 +9,18 @@ let find_regions map =
     |> List.map (V.add pos)
     |> List.fold_left
          (fun reg p ->
-           if Grid.get_opt p map = Some char && not (PSet.mem p reg) then
+           if Grid.get_opt map p = Some char && not (PSet.mem p reg) then
              expand_region char p reg
            else reg)
          region
   in
-  let visited = Grid.(create map.width map.height (fun _ -> '.')) in
+  let visited = Grid.create (Grid.size map) (fun _ -> '.') in
   Grid.flat_mapi
     (fun pos char ->
-      match Grid.get pos visited with
+      match Grid.get visited pos with
       | '.' ->
           let region = expand_region char pos PSet.empty in
-          PSet.iter (fun p -> Grid.set p '+' visited) region;
+          PSet.iter (fun p -> Grid.set visited p '+') region;
           Some region
       | _ -> None)
     map
